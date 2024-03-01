@@ -8,11 +8,13 @@ import org.springframework.context.ApplicationContext;
 
 import com.arun.controller.ExpenseController;
 
+import jakarta.mail.MessagingException;
+
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class MonthlyExpenseTrackerApplication {
 
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws MessagingException {
 
 	
 		ApplicationContext ctx=SpringApplication.run(MonthlyExpenseTrackerApplication.class, args);

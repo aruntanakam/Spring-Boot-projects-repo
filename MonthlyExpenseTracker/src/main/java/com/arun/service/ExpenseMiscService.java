@@ -15,7 +15,7 @@ public class ExpenseMiscService {
 	@Value("${expense.input.folder.name}")
 	private String inputFolder;
 
-	@Value("${expense.input.folder.name}")
+	@Value("${expense.output.folder.name}")
 	private String outputFolder;
 
 	public String getInputFileName() {
