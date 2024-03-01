@@ -5,6 +5,7 @@ import static com.arun.constants.ExpenseConstants.EXPENSES_NAMES_MAP;
 import static com.arun.constants.ExpenseConstants.INPUT_FILE_EXTENSION;
 import static com.arun.constants.ExpenseConstants.MONTHS;
 import static com.arun.constants.ExpenseConstants.TOTAL_MAP;
+import static com.arun.constants.ExpenseConstants.EXPENSES_TOTAL_MAP_DAILY;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -40,6 +41,7 @@ public class ExpenseCalculatorServiceImpl implements IExpenseCalculatorService {
 
 			Map<String, List<String>> expensesNamesMap = new LinkedHashMap<String, List<String>>();
 			Map<String, List<Double>> expensesCostMap = new LinkedHashMap<String, List<Double>>();
+			Map<String,Double> expensesTotalMap=new LinkedHashMap<String,Double>();
 
 			while (s != null) {
 				if (s.trim().startsWith(miscService.getMonth().substring(0, 3))) {
@@ -77,8 +79,12 @@ public class ExpenseCalculatorServiceImpl implements IExpenseCalculatorService {
 				 */
 
 				// total+=values.stream().mapToDouble(Double::doubleValue).sum();
-
-				total += values.stream().reduce(0.0, Double::sum);
+                  
+				double temp=values.stream().reduce(0.0, Double::sum);
+				
+				 expensesTotalMap.put(item.getKey(), temp);
+				
+				total += temp;
 
 			}
 			// System.out.println("Total expense for this month is:"+total);
@@ -90,6 +96,8 @@ public class ExpenseCalculatorServiceImpl implements IExpenseCalculatorService {
 			result.put(EXPENSES_COST_MAP, expensesCostMap);
 			
 			result.put(TOTAL_MAP, total);
+			
+			result.put(EXPENSES_TOTAL_MAP_DAILY, expensesTotalMap);
 
 			return result;
 
