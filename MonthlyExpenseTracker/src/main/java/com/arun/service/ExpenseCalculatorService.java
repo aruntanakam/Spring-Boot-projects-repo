@@ -1,17 +1,20 @@
 package com.arun.service;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cglib.core.Local;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 @Service
+@PropertySource("static/FolderPaths.properties")
 public class ExpenseCalculatorService {
 
 	@Value("${expense.input.folder.name}")
