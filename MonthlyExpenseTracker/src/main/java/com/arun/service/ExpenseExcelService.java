@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.poifs.crypt.HashAlgorithm;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -205,6 +206,10 @@ public class ExpenseExcelService implements IExpenseGeneratorService {
 					int temp = r;
 					XSSFRow row = null;
 					int i = 0;
+					
+					if(CollectionUtils.isNotEmpty(expensesAmount) &&  CollectionUtils.isNotEmpty(expensesName))
+					{
+					
 					for (; i < expensesName.size() - 1; i++) {
 						row = sh.createRow(r);
 						createCell(date, wb, sh, row, "", 0);
@@ -227,6 +232,7 @@ public class ExpenseExcelService implements IExpenseGeneratorService {
 
 					}
 
+				}
 				}
 				createFooter(wb, sh, r, total);
 				wb.setWorkbookPassword("01072000", HashAlgorithm.sha256);

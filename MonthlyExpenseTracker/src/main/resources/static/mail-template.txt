@@ -1,0 +1,9 @@
+Hello userName,
+
+               Please see the attached file in the mail to check your monthly expenses for the month of Month Year.
+               If it asks for password then please use your Date of Birth in the format of DDMMYYYY(for example if your DOB is july 1 2000
+               then password is 01072000.                                          
+
+Thanks and Regards
+Application Team
+mail to:senderMail
