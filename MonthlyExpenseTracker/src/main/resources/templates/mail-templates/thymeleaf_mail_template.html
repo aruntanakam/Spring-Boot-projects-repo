@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+       header{
+
+          text-align: center;
+          background-color: lightblue;
+          padding:1px; 
+          margin-bottom:-20px;
+       }
+       section{
+		   margin-top:-30px;
+           font-size: 20px;
+           background-color: lightblue;
+           padding:20px;
+       }
+       footer{
+          background-color: lightblue;
+          text-align: center;
+          padding:5px
+       }
+       .image-container
+       {
+          display:flex;
+          justify-content: center;
+          margin-top:50px;
+          margin-bottom: 50px;
+       }
+       .end
+       {
+          padding-bottom:5px;
+       }
+       .footer-content
+       {
+           color:white;
+           background-color: red;
+           font-size:20px;
+           padding:5px;
+           margin-bottom: 50px;
+       }
+
+    </style>
+</head>
+<body>
+     
+<header>
+    <h2>Monthly Expenditure <span th:text="${month}"></span> <span th:text="${year}"></span></h2>
+</header>
+
+<section>
+     <p>Hello <b th:text="${userName}"></b></p>
+
+              <p> Please see the attached file in the mail to check your monthly expenses for the month of <b th:text="${month}"> </b> <b th:text="${year}" ></b>.</p>
+              <p> If it asks for password then please use your Date of Birth in the format of DDMMYYYY</p>
+              <p>For example if your DOB is july 1 2000 then password is 01072000.</p>
+           
+        
+
+            <center>
+				
+               <img src="cid:expenseImg" width="400" height="200">
+            
+			</center>
+            <div class="end">
+               sincerely<br>
+               Application Team
+             </div>
+
+     
+</section>
+
+<footer>
+     <span class="footer-content">If you have any queries regarding expenses calculation,please mail  to our application team @ <span th:text="${fromAddress}"></span></span>
+</footer>
+
+     
+</body>
+</html>

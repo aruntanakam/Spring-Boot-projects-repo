@@ -23,7 +23,9 @@ public class MonthlyExpenseTrackerApplication {
 		
 		System.out.println(controller.getTotal());
 		
-		System.out.println(controller.createExcelFile());
+		//System.out.println(controller.createExcelFile());
+		
+		System.out.println(controller.sendMail());
 	}
 
 }
