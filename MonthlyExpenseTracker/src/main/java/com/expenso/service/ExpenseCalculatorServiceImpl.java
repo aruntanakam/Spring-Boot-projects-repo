@@ -1,9 +1,9 @@
-package com.arun.service;
+package com.expenso.service;
 
-import static com.arun.constants.ExpenseConstants.EXPENSES_COST_MAP;
-import static com.arun.constants.ExpenseConstants.EXPENSES_NAMES_MAP;
-import static com.arun.constants.ExpenseConstants.EXPENSES_TOTAL_MAP_DAILY;
-import static com.arun.constants.ExpenseConstants.TOTAL_MAP;
+import static com.expenso.constants.ExpenseConstants.EXPENSES_COST_MAP;
+import static com.expenso.constants.ExpenseConstants.EXPENSES_NAMES_MAP;
+import static com.expenso.constants.ExpenseConstants.EXPENSES_TOTAL_MAP_DAILY;
+import static com.expenso.constants.ExpenseConstants.TOTAL_MAP;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
-import com.arun.Iservice.IExpenseCalculatorService;
+import com.expenso.Iservice.IExpenseCalculatorService;
 
 @Service
 @PropertySource("classpath:/static/FolderPaths.properties")

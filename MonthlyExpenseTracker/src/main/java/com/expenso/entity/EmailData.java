@@ -1,4 +1,4 @@
-package com.arun.entity;
+package com.expenso.entity;
 
 public class EmailData {
 	

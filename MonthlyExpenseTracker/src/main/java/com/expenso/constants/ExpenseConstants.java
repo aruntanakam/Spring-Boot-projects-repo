@@ -1,4 +1,4 @@
-package com.arun.constants;
+package com.expenso.constants;
 
 public class ExpenseConstants {
 

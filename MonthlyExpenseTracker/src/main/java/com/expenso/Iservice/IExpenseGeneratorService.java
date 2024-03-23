@@ -1,4 +1,4 @@
-package com.arun.Iservice;
+package com.expenso.Iservice;
 
 public interface IExpenseGeneratorService {
 	

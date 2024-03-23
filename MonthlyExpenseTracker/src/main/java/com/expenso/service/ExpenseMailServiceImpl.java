@@ -1,4 +1,4 @@
-package com.arun.service;
+package com.expenso.service;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
-import com.arun.Iservice.IExpenseMailService;
-import com.arun.entity.EmailData;
+import com.expenso.Iservice.IExpenseMailService;
+import com.expenso.entity.EmailData;
 
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;

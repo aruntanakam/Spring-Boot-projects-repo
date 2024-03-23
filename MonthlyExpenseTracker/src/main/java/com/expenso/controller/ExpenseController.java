@@ -1,6 +1,6 @@
-package com.arun.controller;
+package com.expenso.controller;
 
-import static com.arun.constants.ExpenseConstants.TOTAL_MAP;
+import static com.expenso.constants.ExpenseConstants.TOTAL_MAP;
 
 import java.util.Map;
 
@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.arun.Iservice.IExpenseCalculatorService;
-import com.arun.Iservice.IExpenseGeneratorService;
-import com.arun.Iservice.IExpenseMailService;
-import com.arun.entity.EmailData;
-import com.arun.service.ExpenseMiscService;
+import com.expenso.Iservice.IExpenseCalculatorService;
+import com.expenso.Iservice.IExpenseGeneratorService;
+import com.expenso.Iservice.IExpenseMailService;
+import com.expenso.entity.EmailData;
+import com.expenso.service.ExpenseMiscService;
 
 @RestController
 public class ExpenseController {

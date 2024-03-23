@@ -1,6 +1,6 @@
-package com.arun.Iservice;
+package com.expenso.Iservice;
 
-import com.arun.entity.EmailData;
+import com.expenso.entity.EmailData;
 
 public interface IExpenseMailService {
 	
