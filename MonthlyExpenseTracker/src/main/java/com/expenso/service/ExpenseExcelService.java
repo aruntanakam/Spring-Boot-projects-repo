@@ -36,17 +36,20 @@ import org.springframework.stereotype.Service;
 
 import com.expenso.Iservice.IExpenseCalculatorService;
 import com.expenso.Iservice.IExpenseGeneratorService;
+import com.expenso.entity.MonthAndYearInput;
+import com.expenso.exception.OutputFileGenerationException;
 
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 
 @Service("excelService")
+@Slf4j
 public class ExpenseExcelService implements IExpenseGeneratorService {
 
 	@Autowired
 	private IExpenseCalculatorService calculatorService;
 	
-	@Autowired
-	private JavaMailSender mailSender;
+	
 
 	@Autowired
 	private ExpenseMiscService miscService;
@@ -172,27 +175,30 @@ public class ExpenseExcelService implements IExpenseGeneratorService {
 
 	@SuppressWarnings({ "unchecked", "unused" })
 	@Override
-	public String generateFile() {
+	public void generateFile(Map<String, Object> map,MonthAndYearInput m)  {
 
-		Map<String, Object> map = calculatorService.calculateExpense();
-
-		double total = (double) map.get(TOTAL_MAP);
-
-		Map<String, Double> total_daily = (Map<String, Double>) map.get(EXPENSES_TOTAL_MAP_DAILY);
-
+		log.info("Preparing to create output excel sheet");
+		
+  String month=m.getMonth();
+  String year=m.getYear();
+		
 		if (map != null) {
+			double total = (double) map.get(TOTAL_MAP);
+
+			Map<String, Double> total_daily = (Map<String, Double>) map.get(EXPENSES_TOTAL_MAP_DAILY);
+
 
 			Map<String, List<String>> expensesNamesMap = (Map<String, List<String>>) map.get(EXPENSES_NAMES_MAP);
 
 			Map<String, List<Double>> expensesCostMap = (Map<String, List<Double>>) map.get(EXPENSES_COST_MAP);
 
-			String outputfile = miscService.getOutputExcelFileName();
+			String outputfile = miscService.getOutputExcelFileName(m);
 
 			deleteFileIfExists(outputfile);
 			int r = 1;
 
 			try (XSSFWorkbook wb = new XSSFWorkbook(); FileOutputStream os = new FileOutputStream(outputfile)) {
-				XSSFSheet sh = wb.createSheet(miscService.getMonth() + " " + miscService.getYear() + " expenses");
+				XSSFSheet sh = wb.createSheet(month + " " + year + " expenses");
 
 				createHeader(wb, sh);
 
@@ -240,15 +246,17 @@ public class ExpenseExcelService implements IExpenseGeneratorService {
 				
 				
 
-				return "File " + outputfile + " generated on " + (LocalDateTime.now().toString());
+				log.info("File " + outputfile + " generated on " + (LocalDateTime.now().toString()));
 			} catch (Exception e) {
-				e.printStackTrace();
-				return null;
+				
+				log.error("Unable to create excel sheet:"+e.getMessage());
+				throw new OutputFileGenerationException();
 			}
 			
 
 		} else {
-			return null;
+			log.error("Unable to create excel sheet as input data is null");
+			throw new OutputFileGenerationException();
 		}
 
 	}

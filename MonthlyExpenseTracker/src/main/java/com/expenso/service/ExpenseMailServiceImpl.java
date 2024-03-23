@@ -3,7 +3,6 @@ package com.expenso.service;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.URI;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +19,9 @@ import org.thymeleaf.context.Context;
 
 import com.expenso.Iservice.IExpenseMailService;
 import com.expenso.entity.EmailData;
+import com.expenso.entity.InputData;
+import com.expenso.entity.MonthAndYearInput;
+import com.expenso.exception.MailFailedEception;
 
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
@@ -28,8 +30,10 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class ExpenseMailServiceImpl implements IExpenseMailService{
 	
 	@Autowired
@@ -48,10 +52,11 @@ public class ExpenseMailServiceImpl implements IExpenseMailService{
 	private TemplateEngine engine;
 
 	@Override
-	public String sendMail(EmailData emailData) {
+	public void sendMail(InputData data)  {
 		// TODO Auto-generated method stub
 		
-		
+		EmailData emailData=data.getMailData();
+		MonthAndYearInput m=data.getMonthandyearinput();
 		
 		try {
 			MimeMessage message =mailSender.createMimeMessage();
@@ -59,17 +64,18 @@ public class ExpenseMailServiceImpl implements IExpenseMailService{
 			
 			helper.setFrom(fromAddress);
 			helper.setTo(emailData.getToAddress());
-			helper.setCc(emailData.getCcAddress());
-			helper.setBcc(emailData.getBccAddress());
-			helper.setSubject(miscService.getEmailSubject());
-			//helper.setText(getFreeMarkerText(emailData),true);
-			helper.setText(getThymeLeafTemplate(emailData),true);
+			helper.setCc(fromAddress);
+			helper.setBcc("madhutanakam@gmail.com");
+			helper.setSubject(miscService.getEmailSubject(m));
+			//helper.setText(getFreeMarkerText(emailData,m),true);
+			helper.setText(getThymeLeafTemplate(emailData,m),true);
 			
-			File f=new File(miscService.getOutputExcelFileName());
+			File f=new File(miscService.getOutputExcelFileName(m));
 			
 			if(!Files.exists(f.toPath()))
 			{
-			   return "unable to send mail as file does not exists";	
+			   log.error("unable to send mail as file does not exists");
+			   throw new MailFailedEception("unable to send mail as output excel file does not exists");
 			}
 			
 		   FileSystemResource fs=new FileSystemResource(f); 
@@ -84,12 +90,12 @@ public class ExpenseMailServiceImpl implements IExpenseMailService{
 			
 			mailSender.send(message);
 			
-			return "mail sent successfully";
+			log.info("mail sent successfully");
 			
-		} catch (MessagingException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return "mail sending failed";
+			log.error("mail sending failed {}",e.getMessage());
+			throw new MailFailedEception();
 		}
 		
 		
@@ -99,52 +105,51 @@ public class ExpenseMailServiceImpl implements IExpenseMailService{
 		
 	}
 	
-	public String getFreeMarkerText(EmailData data)
+	public String getFreeMarkerText(EmailData data,MonthAndYearInput m) throws Exception
 	{
 		Map<String,Object> map=new HashMap<>();
 		
 		map.put("userName", data.getUserName());
-		map.put("month",miscService.getMonth());
+		map.put("month",m.getMonth());
 		map.put("fromAddress", fromAddress);
-		map.put("year", miscService.getYear());
+		map.put("year", m.getYear());
 		
 		StringWriter out=new StringWriter();
      
 		try {
+			log.info("Reading freemarker template");
 			config.getTemplate("freemarker_mail_template.ftlh").process(map, out);
-		} catch (TemplateNotFoundException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MalformedTemplateNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TemplateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("error while reading freemarker template {}",e.getMessage());
+			throw e;
 		}
 		
 		return out.toString();
 	}
-	public String getThymeLeafTemplate(EmailData data)
+	public String getThymeLeafTemplate(EmailData data,MonthAndYearInput m) throws Exception
 	{
-		Context context=new Context();
-Map<String,Object> map=new HashMap<>();
-		
-		map.put("userName", data.getUserName());
-		map.put("month",miscService.getMonth());
-		map.put("fromAddress", fromAddress);
-		map.put("year", miscService.getYear());
-		
-		context.setVariables(map);
-		
-		
-		 return engine.process("thymeleaf_mail_template.html", context);
+		try
+		{
+			log.info("Reading thymeleaf template");
+			Context context=new Context();
+			Map<String,Object> map=new HashMap<>();
+					
+					map.put("userName", data.getUserName());
+					map.put("month",m.getMonth());
+					map.put("fromAddress", fromAddress);
+					map.put("year", m.getYear());
+					
+					context.setVariables(map);
+					
+					
+		return engine.process("thymeleaf_mail_template.html", context);
+		}
+		catch(Exception e)
+		{
+			log.error("error while reading thymeleaf template:"+e.getMessage());
+			throw e;
+		}
 	}
 
 }

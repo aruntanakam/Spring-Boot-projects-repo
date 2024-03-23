@@ -1,9 +1,9 @@
 package com.expenso.Iservice;
 
-import com.expenso.entity.EmailData;
+import com.expenso.entity.InputData;
 
 public interface IExpenseMailService {
 	
-	public String sendMail(EmailData emailData);
+	public void sendMail(InputData data);
 
 }

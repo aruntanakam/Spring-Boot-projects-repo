@@ -5,10 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EmailData {
+public class MonthAndYearInput {
 	
-	private String userName;
+	private String month;
 	
-	private String toAddress;
-	
+	private String year;
+
 }

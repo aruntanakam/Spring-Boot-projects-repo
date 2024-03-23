@@ -5,27 +5,25 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.PropertySource;
 
 import com.expenso.controller.ExpenseController;
 
 import jakarta.mail.MessagingException;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
+@PropertySource("classpath:/static/FolderPaths.properties")
 public class MonthlyExpenseTrackerApplication {
 
 
 	public static void main(String[] args) throws MessagingException {
 
 	
-		ApplicationContext ctx=SpringApplication.run(MonthlyExpenseTrackerApplication.class, args);
+		SpringApplication.run(MonthlyExpenseTrackerApplication.class, args);
 
-		ExpenseController controller=ctx.getBean(ExpenseController.class);
 		
-		System.out.println(controller.getTotal());
 		
-		System.out.println(controller.createExcelFile());
 		
-		System.out.println(controller.sendMail());
 	}
 
 }

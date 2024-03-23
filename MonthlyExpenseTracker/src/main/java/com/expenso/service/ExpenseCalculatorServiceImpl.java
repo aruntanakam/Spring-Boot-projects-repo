@@ -22,52 +22,35 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import com.expenso.Iservice.IExpenseCalculatorService;
+import com.expenso.entity.MonthAndYearInput;
+import com.expenso.exception.ExpenseCalculationException;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-@PropertySource("classpath:/static/FolderPaths.properties")
+@Slf4j
 public class ExpenseCalculatorServiceImpl implements IExpenseCalculatorService {
 
 	@Autowired
 	private ExpenseMiscService miscService;
 
-	public Map<String, Object> calculateExpense() {
-		try {
-
-			/*
-			 * BufferedReader br = new BufferedReader(new
-			 * FileReader(miscService.getInputFileName()));
-			 */
-
-			// String s = br.readLine();
-
+	public Map<String, Object> calculateExpense(String  month,List<String> inputFileData)  {
+		try
+		{
+			log.info("preparing to calculate expense");
 			Map<String, List<String>> expensesNamesMap = new LinkedHashMap<String, List<String>>();
 			Map<String, List<Double>> expensesCostMap = new LinkedHashMap<String, List<Double>>();
 			Map<String, Double> expensesTotalMap = new LinkedHashMap<String, Double>();
 
-			/*
-			 * while (s != null) { if
-			 * (s.trim().startsWith(miscService.getMonth().substring(0, 3))) {
-			 * ArrayList<String> names = new ArrayList<String>(); ArrayList<Double> cost =
-			 * new ArrayList<Double>(); expensesNamesMap.put(s, names);
-			 * expensesCostMap.put(s, cost); s = br.readLine(); while ((s != null) && !((s =
-			 * s.trim()).startsWith(miscService.getMonth().substring(0, 3)))) { s =
-			 * s.trim(); int index = s.indexOf(":"); if (index > 0) { String name =
-			 * s.substring(0, index); Double c = Double.parseDouble(s.substring(index + 1));
-			 * names.add(name); cost.add(c); } s = br.readLine(); }
-			 * 
-			 * } else { s = br.readLine(); }
-			 * 
-			 * }
-			 */
-
-			List<String> list = Files.readAllLines(Paths.get(miscService.getInputFileName()));
-
+			
+			
+			List<String> list = inputFileData;
 			ListIterator<String> ite = list.listIterator();
 
 			while (ite.hasNext()) {
 				String str = ite.next();
 
-				if (str != null && (str = str.trim()).startsWith(miscService.getMonth().substring(0, 3))) {
+				if (str != null && (str = str.trim()).startsWith(month.substring(0, 3))) {
 					ArrayList<String> names = new ArrayList<String>();
 					ArrayList<Double> cost = new ArrayList<Double>();
 					expensesNamesMap.put(str, names);
@@ -76,19 +59,18 @@ public class ExpenseCalculatorServiceImpl implements IExpenseCalculatorService {
 					String expense = "";
 
 					while (ite.hasNext() && (expense = ite.next()) != null
-							&& !(expense = expense.trim()).startsWith(miscService.getMonth().substring(0, 3))) {
+							&& !(expense = expense.trim()).startsWith(month.substring(0, 3))) {
 
 						expense = expense.trim();
 						int index = expense.indexOf(":");
 						if (index > 0) {
 
-							names.add(expense.substring(0, index));
-							cost.add(Double.parseDouble(expense.substring(index + 1)));
+							names.add(expense.substring(0, index).trim());
+							cost.add(Double.valueOf(expense.substring(index + 1).strip()));
 						}
 					}
-					
-					if((expense = expense.trim()).startsWith(miscService.getMonth().substring(0, 3)))
-					{
+
+					if ((expense = expense.trim()).startsWith(month.substring(0, 3))) {
 						ite.previous();
 					}
 
@@ -100,11 +82,6 @@ public class ExpenseCalculatorServiceImpl implements IExpenseCalculatorService {
 
 			for (Map.Entry<String, List<Double>> item : expensesCostMap.entrySet()) {
 				List<Double> values = item.getValue();
-				/*
-				 * System.out.println(item.getKey());
-				 * System.out.println(expensesNamesMap.get(item.getKey()));
-				 * System.out.println(values);
-				 */
 
 				// total+=values.stream().mapToDouble(Double::doubleValue).sum();
 				if (CollectionUtils.isNotEmpty(values)) {
@@ -116,7 +93,7 @@ public class ExpenseCalculatorServiceImpl implements IExpenseCalculatorService {
 				}
 
 			}
-			// System.out.println("Total expense for this month is:"+total);
+			log.info("Total expense for the month {} is {}:",month,total);
 
 			Map<String, Object> result = new LinkedHashMap<String, Object>();
 
@@ -129,12 +106,13 @@ public class ExpenseCalculatorServiceImpl implements IExpenseCalculatorService {
 			result.put(EXPENSES_TOTAL_MAP_DAILY, expensesTotalMap);
 
 			return result;
+		
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
 		}
-	}
-
+		catch(Exception e)
+		{
+			log.error("Exception occured while calculating expense {}",e.getMessage());
+			throw new ExpenseCalculationException();
+		}
+}
 }
