@@ -1,2 +1,2 @@
 # Spring-Boot-projects-repo
-A repository created to store all my spring boot projects
+A repository created for monthly expense tracker application
