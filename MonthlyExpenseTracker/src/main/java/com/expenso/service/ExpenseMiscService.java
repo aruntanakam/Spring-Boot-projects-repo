@@ -17,17 +17,20 @@ import org.springframework.stereotype.Service;
 
 import com.expenso.entity.MonthAndYearInput;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class ExpenseMiscService {
 
 	@Value("${expense.input.folder.name}")
-	private String inputFolder;
+	private  String inputFolder;
 
 	@Value("${expense.output.folder.name}")
 	private String outputFolder;
 	
 
-	public String getInputFileName(MonthAndYearInput input) {
+	public  String getInputFileName(MonthAndYearInput input) {
 
 		return inputFolder + input.getMonth() + "_" + input.getYear() + INPUT_FILE_EXTENSION;
 
@@ -67,6 +70,19 @@ public class ExpenseMiscService {
 		String s="Monthly Expenditure "+input.getMonth()+" "+input.getYear();
 		
 		return s;
+	}
+	
+	public void sleep(long time)
+	{
+		try
+		{
+			Thread.sleep(time);
+		}
+		catch(Exception e)
+		{
+			log.error("error occured due to sleep interruption");
+		    throw new RuntimeException(e.getMessage());
+		}
 	}
 	
 	

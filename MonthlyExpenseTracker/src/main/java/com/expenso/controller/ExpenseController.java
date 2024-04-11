@@ -24,7 +24,7 @@ import com.expenso.service.ExpenseMiscService;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/expenso/api")
+@RequestMapping("expenso/api")
 @Slf4j
 public class ExpenseController {
 
@@ -45,10 +45,10 @@ public class ExpenseController {
 	private IFileReaderService readerService;
 
 	@PostMapping("/send-mail")
-	public ResponseEntity<String> sendMail(@RequestBody InputData data) {
+	public ResponseEntity<String> sendMail(@RequestBody InputData data)  {
 		log.info("api request for sending mail  initiated");
 
-		try {
+		
 			MonthAndYearInput m = data.getMonthandyearinput();
 			EmailData emailData = data.getMailData();
 
@@ -60,16 +60,12 @@ public class ExpenseController {
 
 			excelService.generateFile(map, m);
 
-			Thread.sleep(2000);
+			miscService.sleep(1000);
 
 			mailService.sendMail(data);
 
 			return new ResponseEntity<String>("Mail sent successfully", HttpStatus.OK);
-		} catch (Exception e) {
-			String errorMessage="Error occured in processing api,reason is :" + e.getMessage();
-			log.error(errorMessage);
-			return new ResponseEntity<String>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		
 
 	}
 
